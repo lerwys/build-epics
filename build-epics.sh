@@ -47,6 +47,13 @@ TAR=$PREFIX.tar
 PMAKE="-j${opt_J}"
 INSTALL_LOCATION="${opt_I}"
 
+EPICS_BASE_INSTALL_LOCATION=
+if [ -z "$INSTALL_LOCATION" ]; then
+    EPICS_BASE_INSTALL_LOCATION="\$(TOP)/../../epics-base"
+else
+    EPICS_BASE_INSTALL_LOCATION="${INSTALL_LOCATION}/epics-base"
+fi
+
 die() {
     echo "$1" >&1
     exit 1
@@ -125,66 +132,66 @@ else
 fi
 
 cat <<EOF >pvxs/configure/RELEASE
-EPICS_BASE=\$(TOP)/../epics-base
+EPICS_BASE=${EPICS_BASE_INSTALL_LOCATION}
 EOF
 
 cat <<EOF >pcas/configure/RELEASE
-EPICS_BASE=\$(TOP)/../epics-base
+EPICS_BASE=${EPICS_BASE_INSTALL_LOCATION}
 EOF
 
 cat <<EOF >ca-cagateway/configure/RELEASE
 PCAS=\$(EPICS_BASE)/../pcas
-EPICS_BASE=\$(TOP)/../epics-base
+EPICS_BASE=${EPICS_BASE_INSTALL_LOCATION}
 EOF
 
 cat <<EOF >caputlog/configure/RELEASE
-EPICS_BASE=\$(TOP)/../epics-base
+EPICS_BASE=${EPICS_BASE_INSTALL_LOCATION}
 EOF
 
 cat <<EOF >autosave/configure/RELEASE
-EPICS_BASE=\$(TOP)/../epics-base
+EPICS_BASE=${EPICS_BASE_INSTALL_LOCATION}
 EOF
 
 cat <<EOF >recsync/client/configure/RELEASE
-EPICS_BASE=\$(TOP)/../../epics-base
+EPICS_BASE=${EPICS_BASE_INSTALL_LOCATION}
 EOF
 
 cat <<EOF >seq/configure/RELEASE
-EPICS_BASE=\$(TOP)/../epics-base
+EPICS_BASE=${EPICS_BASE_INSTALL_LOCATION}
 EOF
 
 cat <<EOF >iocstats/configure/RELEASE
 SNCSEQ=\$(EPICS_BASE)/../seq
-EPICS_BASE=\$(TOP)/../epics-base
+EPICS_BASE=${EPICS_BASE_INSTALL_LOCATION}
 EOF
 
 cat <<EOF >asyn/configure/RELEASE
-EPICS_BASE=\$(TOP)/../epics-base
+EPICS_BASE=${EPICS_BASE_INSTALL_LOCATION}
 EOF
 
 cat <<EOF >etherip/configure/RELEASE
-EPICS_BASE=\$(TOP)/../epics-base
+EPICS_BASE=${EPICS_BASE_INSTALL_LOCATION}
 EOF
 
 cat <<EOF >busy/configure/RELEASE
 ASYN=\$(EPICS_BASE)/../asyn
-EPICS_BASE=\$(TOP)/../epics-base
+EPICS_BASE=${EPICS_BASE_INSTALL_LOCATION}
 EOF
 
 cat <<EOF >modbus/configure/RELEASE
 ASYN=\$(EPICS_BASE)/../asyn
-EPICS_BASE=\$(TOP)/../epics-base
+EPICS_BASE=${EPICS_BASE_INSTALL_LOCATION}
 EOF
 
 cat <<EOF >sscan/configure/RELEASE
 SNCSEQ=\$(EPICS_BASE)/../seq
-EPICS_BASE=\$(TOP)/../epics-base
+EPICS_BASE=${EPICS_BASE_INSTALL_LOCATION}
 EOF
 
 cat <<EOF >calc/configure/RELEASE
 SSCAN=\$(EPICS_BASE)/../sscan
 SNCSEQ=\$(EPICS_BASE)/../seq
-EPICS_BASE=\$(TOP)/../epics-base
+EPICS_BASE=${EPICS_BASE_INSTALL_LOCATION}
 EOF
 
 cat <<EOF >stream/configure/RELEASE
@@ -192,20 +199,20 @@ SSCAN=\$(EPICS_BASE)/../sscan
 SNCSEQ=\$(EPICS_BASE)/../seq
 CALC=\$(EPICS_BASE)/../calc
 ASYN=\$(EPICS_BASE)/../asyn
-EPICS_BASE=\$(TOP)/../epics-base
+EPICS_BASE=${EPICS_BASE_INSTALL_LOCATION}
 EOF
 
 cat <<EOF >devsnmp/configure/RELEASE
-EPICS_BASE=\$(TOP)/../epics-base
+EPICS_BASE=${EPICS_BASE_INSTALL_LOCATION}
 EOF
 
 cat <<EOF >p4p/configure/RELEASE.local
 PVXS=\$(TOP)/../pvxs
-EPICS_BASE=\$(TOP)/../epics-base
+EPICS_BASE=${EPICS_BASE_INSTALL_LOCATION}
 EOF
 
 cat <<EOF > pscdrv-dev/configure/RELEASE.local
-EPICS_BASE=\$(TOP)/../epics-base
+EPICS_BASE=${EPICS_BASE_INSTALL_LOCATION}
 EOF
 
 cat <<EOF > pscdrv-dev/configure/CONFIG_SITE.local
