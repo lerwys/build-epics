@@ -3,8 +3,8 @@ set -e -x
 # Build epics-base and common support modules
 #
 # Debian 12 packages to build
-# build-essential autoconf automake libreadline-dev libncurses-dev 
-# libpcre3-dev libxml2-dev libjpeg-dev libxext-dev re2c libgraphicsmagick++1-dev 
+# build-essential autoconf automake libreadline-dev libncurses-dev
+# libpcre3-dev libxml2-dev libjpeg-dev libxext-dev re2c libgraphicsmagick++1-dev
 # libaec-dev libhdf5-dev libjpeg-dev libnetcdf-dev libtiff-dev libz3-dev python-is-python3
 #
 # Required Debian packages to build
@@ -26,11 +26,13 @@ set -e -x
 
 opt_J=2
 opt_P=
-while getopts hj:p: opt
+opt_I=
+while getopts hj:p:i: opt
 do
     case $opt in
     j)  opt_J=$OPTARG;;
     p)  opt_P=-${OPTARG};;
+    i)  opt_I=${OPTARG};;
     *)  echo "$0 [-j #] [-p NAME]"
         exit 1
         ;;
@@ -43,6 +45,7 @@ PREFIX=epics${opt_P}-`uname -m`-`date +%Y%m%d`
 TAR=$PREFIX.tar
 
 PMAKE="-j${opt_J}"
+INSTALL_LOCATION="${opt_I}"
 
 die() {
     echo "$1" >&1
@@ -65,12 +68,17 @@ git_module() {
 }
 
 do_make() {
-    make LINKER_USE_RPATH=ORIGIN LINKER_ORIGIN_ROOT="$BASEDIR" $PMAKE "$@"
+    name="$1"
+    shift
+    if [ -z "$INSTALL_LOCATION" ]; then
+        make LINKER_USE_RPATH=ORIGIN LINKER_ORIGIN_ROOT="$BASEDIR" $PMAKE "$@"
+    else
+        make LINKER_USE_RPATH=ORIGIN INSTALL_LOCATION="$INSTALL_LOCATION/$name" LINKER_ORIGIN_ROOT="$INSTALL_LOCATION" $PMAKE "$@"
+    fi
 }
 
 do_module() {
     name="$1"
-    shift
     echo "Building module $name"
     cat "$name"/configure/RELEASE
     (cd "$name" && do_make "$@")
@@ -225,8 +233,8 @@ else
 fi
 
 echo "Bundled libevent"
-(cd pvxs/bundle && do_make $LIBEVENT_ARGS libevent.${EPICS_HOST_ARCH})
-(cd pvxs/bundle && do_make $LIBEVENT_ARGS libevent.${EPICS_HOST_ARCH}-debug)
+(cd pvxs/bundle && do_make "libevent" $LIBEVENT_ARGS libevent.${EPICS_HOST_ARCH})
+(cd pvxs/bundle && do_make "libevent" $LIBEVENT_ARGS libevent.${EPICS_HOST_ARCH}-debug)
 
 do_module epics-base -s
 do_module pvxs
